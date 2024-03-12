@@ -36,7 +36,7 @@ export default function Home() {
 
   return (
     <div>
-      <main className="my-5 sm:mx-auto mx-5 max-w-md p-5 pb-10 bg-white rounded-lg shadow-sm">
+      <main className="my-5 sm:mx-auto mx-5 max-w-md p-5 pb-10 mb-10 bg-white rounded-lg shadow-sm">
         <div className="mb-10">
           <h1 className="text-xl font-light">
             <span className="font-bold">BMI Tracker</span>

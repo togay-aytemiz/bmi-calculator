@@ -6,39 +6,33 @@ export default function Home() {
   const [weight, setWeight] = useState(72);
   const [height, setHeight] = useState(180);
 
-  const calculateBMI = () => {
+  const calculateBMI = useMemo(() => {
     let heightInKg = height / 100;
     let bmi = weight / (heightInKg * heightInKg);
     return bmi;
-  };
+  }, [weight, height]);
 
-  const normalizeBMI = (bmi) => {
+  const normalizeBMI = useMemo(() => {
     const minBMI = 15; // Minimum possible BMI
     const maxBMI = 40; // Maximum possible BMI
-    return (bmi - minBMI) / (maxBMI - minBMI);
-  };
+    return (calculateBMI - minBMI) / (maxBMI - minBMI);
+  }, [calculateBMI]);
 
-  const getProgressColor = (bmi) => {
-    if (bmi < 18.5) {
+  const getProgressColor = useMemo(() => {
+    if (calculateBMI < 18.5) {
       return "text-blue-500"; // Underweight
-    } else if (bmi >= 18.5 && bmi < 25) {
+    } else if (calculateBMI >= 18.5 && calculateBMI < 25) {
       return "text-green-500"; // Normal weight
-    } else if (bmi >= 25 && bmi < 30) {
+    } else if (calculateBMI >= 25 && calculateBMI < 30) {
       return "text-yellow-500"; // Overweight
     } else {
       return "text-red-500"; // Obese
     }
-  };
+  }, [calculateBMI]);
 
-  const memoizedBMI = useMemo(() => calculateBMI(), [weight, height]);
-  const memoizedNormalizedBMI = useMemo(
-    () => normalizeBMI(memoizedBMI),
-    [memoizedBMI]
-  );
-  const memoizedProgressColor = useMemo(
-    () => getProgressColor(memoizedBMI),
-    [memoizedBMI]
-  );
+  const calculatedBMI = calculateBMI;
+  const normalizedBMI = normalizeBMI;
+  const calculatedProgressColor = getProgressColor;
 
   return (
     <div>
@@ -90,14 +84,16 @@ export default function Home() {
         <div className="flex items-center flex-col gap-10">
           <h1 className="text-2xl font-bold">Your calculated BMI</h1>
           <div
-            className={`radial-progress ${memoizedProgressColor}`}
+            className={`radial-progress ${calculatedProgressColor}`}
             style={{
-              "--value": memoizedNormalizedBMI * 100,
+              "--value": normalizedBMI * 100,
               "--size": "12rem",
             }}
             role="progressbar"
           >
-            <span className="text-2xl font-bold">{memoizedBMI.toFixed(1)}</span>
+            <span className="text-2xl font-bold">
+              {calculatedBMI.toFixed(1)}
+            </span>
           </div>
         </div>
       </main>
